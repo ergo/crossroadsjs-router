@@ -1,14 +1,14 @@
 {
-  "name": "polymer-starter-kit-custom-build",
-  "version": "0.0.0",
-  "description": "A starting point for Polymer 1.0 custom build apps",
+  "name": "crossroadsjs-router",
+  "version": "0.1.0",
+  "description": "Crossroads.js router support for polymer",
   "repository": {
     "type": "git",
-    "url": "git@github.com:PolymerElements/generator-polymer-init-custom-build"
+    "url": "git@github.com:ergo/crossroadsjs-router"
   },
-  "license": "http://polymer.github.io/LICENSE.txt",
+  "license": "http://www.apache.org/licenses/LICENSE-2.0",
   "bugs": {
-    "url": "https://github.com/PolymerElements/generator-polymer-init-custom-build/issues"
+    "url": ""
   },
   "engines": {
     "node": ">=4.0"
