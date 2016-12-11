@@ -3,7 +3,7 @@
   "description": "Crossroads.js router support for polymer",
   "main": "crossroadsjs-router.html",
   "dependencies": {
-    "polymer": "Polymer/polymer#^1.4.0",
+    "polymer": "Polymer/polymer#^1.4.0"
   },
   "devDependencies": {
     "iron-pages": "^1.0.8",
