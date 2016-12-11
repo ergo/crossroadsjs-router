@@ -4,25 +4,25 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>polymer-crossroadsjs test</title>
+    <title>crossroadsjs-router test</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
-    <link rel="import" href="../polymer-crossroadsjs.html">
+    <link rel="import" href="../crossroadsjs-router.html">
   </head>
   <body>
     <test-fixture id="basic">
       <template>
-        <polymer-crossroadsjs></polymer-crossroadsjs>
+        <crossroadsjs-router></crossroadsjs-router>
       </template>
     </test-fixture>
 
     <script>
-      suite('polymer-crossroadsjs', function() {
+      suite('crossroadsjs-router', function() {
         test('instantiating the element works', function() {
           var element = fixture('basic');
-          assert.equal(element.is, 'polymer-crossroadsjs');
+          assert.equal(element.is, 'crossroadsjs-router');
         });
       });
     </script>

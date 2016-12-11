@@ -1,7 +1,7 @@
 {
-  "name": "polymer-crossroadsjs",
+  "name": "crossroadsjs-router",
   "description": "Crossroads.js router support for polymer",
-  "main": "polymer-crossroadsjs.html",
+  "main": "crossroadsjs-router.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
   },
