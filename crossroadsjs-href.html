@@ -1,0 +1,24 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="crossroadsjs-href-behavior.html">
+
+
+<dom-module id="crossroadsjs-href">
+    <template>
+        <style>
+        </style>
+
+        <a href="[[generatedLink]]">
+        <slot></slot>
+        </a>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'crossroadsjs-href',
+            behaviors:[
+                CrossroadsHrefBehavior
+            ]
+        });
+    </script>
+</dom-module>

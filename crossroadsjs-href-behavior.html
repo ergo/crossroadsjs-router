@@ -1,0 +1,88 @@
+<script>
+    var CrossroadsHrefBehavior = {
+        properties: {
+            crossroadsRouteName: {
+                type: String,
+                value: function () {
+                    return ''
+                }
+            },
+            paramQueryObject: {
+                type: Object,
+                value: function () {
+                    return {}
+                }
+            },
+            paramHashString: {
+                type: String,
+                value: function () {
+                    return ''
+                }
+            },
+            crossroadsRoutes: {
+                type: Object,
+                value: function () {
+                    return {}
+                }
+            },
+            generatedLink: {
+                type: String,
+                notify: true
+            }
+        },
+
+        _toCamelCase: function (input) {
+            output = input[0].toUpperCase() + input.slice(1);
+            return output;
+        },
+
+        attributeChanged: function (name, type) {
+            this.crossroadsComputedLink();
+        },
+
+        attached: function () {
+            this.crossroadsComputedLink();
+        },
+
+        crossroadsComputedLink: function () {
+            console.log('crossroadsComputedLink');
+            if (this.crossroadsRoutes.hasOwnProperty(this.crossroadsRouteName)) {
+                var route = this.crossroadsRoutes[this.crossroadsRouteName];
+                var routeParams = {};
+                for (var x = 0; x < this.attributes.length; x++) {
+                    var item = this.attributes[x];
+                    if (item.name.indexOf('param-') === 0) {
+                        var name = item.name.slice(6);
+                        // remove binding sign from non-binding attributes
+                        if (name.slice(-1) === '$') {
+                            name = name.slice(0, -1);
+                        }
+                        var segments = name.split('-');
+                        name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
+                        routeParams[name] = item.value;
+                    }
+                }
+                if (route._paramsIds.indexOf('?query') !== -1) {
+                    routeParams['query'] = this.paramQueryObject;
+                    routeParams['?query'] = this.paramQueryObject;
+                }
+                var shouldGenerate = true;
+                route._paramsIds.map(function (item) {
+                    if (route._optionalParamsIds.indexOf(item) === -1 &&
+                        !routeParams.hasOwnProperty(item)) {
+                        shouldGenerate = false;
+                    }
+                });
+                console.log(route, this.crossroadsRouteName, shouldGenerate, route._paramsIds, routeParams);
+                if (shouldGenerate) {
+                    console.log(route._paramsIds, routeParams)
+                    var url = route.interpolate(routeParams);
+                    if (this.paramHashString) {
+                        url += '#' + this.paramHashString;
+                    }
+                    this.generatedLink = url;
+                }
+            }
+        }
+    };
+</script>

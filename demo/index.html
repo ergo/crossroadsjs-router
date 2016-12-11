@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>polymer-crossroadsjs demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-pages/iron-pages.html">
+    <link rel="import" href="../../iron-location/iron-location.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
+    <link rel="import" href="../crossroadsjs-router.html">
+    <link rel="import" href="../crossroadsjs-route.html">
+    <link rel="import" href="../crossroadsjs-route-data.html">
+    <link rel="import" href="../crossroadsjs-href.html">
+    <link rel="import" href="object-debug.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+        .vertical-section-container {
+            max-width: 100%;
+        }
+
+        .card {
+            margin: 24px;
+            padding: 16px;
+            color: #757575;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="vertical-section-container centered">
+    <h3>Basic polymer-crossroadsjs demo</h3>
+    <demo-snippet>
+        <template is="dom-bind">
+            <iron-location path="{{path}}" hash="{{hash}}" query="{{query}}"></iron-location>
+
+            <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+                                 crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
+                                 crossroads-matched-routes="{{routerMatchedRoutes}}"
+                                 crossroads-routes="{{routesHolder}}">
+                <crossroadsjs-route name="index"
+                                    route="/"></crossroadsjs-route>
+                <crossroadsjs-route name="prefix"
+                                    route="/prefix/:subroute*:"></crossroadsjs-route>
+                <crossroadsjs-route name="prefix_section"
+                                    route="/prefix/{section}/:?query::subroute*:"></crossroadsjs-route>
+                <crossroadsjs-route name="prefix_section_actionId"
+                                    route="/prefix/{section}/{action}/{objectId}/:slug*:"></crossroadsjs-route>
+                <crossroadsjs-route name="admin_section"
+                                    route="/admin/{section}:subroute*:"></crossroadsjs-route>
+                <crossroadsjs-route name="admin_section_actionId"
+                                    route="/admin/{section}/{action}/{objectId}/:slug:"></crossroadsjs-route>
+            </crossroadsjs-router>
+
+            <!-- this router is independent of router1 -->
+            <crossroadsjs-router id="router2" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+                                 crossroads-query="[[query]]" crossroads-matched-data="{{otherMatchedData}}"
+                                 crossroads-matched-routes="{{otherMatchedRoutes}}" crossroads-namespace="other-space">
+                <crossroadsjs-route name="other"
+                                    route="/other:subroute*:"></crossroadsjs-route>
+                <crossroadsjs-route name="other_section"
+                                    route="/other/{section}:subroute*:"></crossroadsjs-route>
+            </crossroadsjs-router>
+
+            <!-- this router shares route data with router1 -->
+            <crossroadsjs-router id="router3" crossroads-path="[[path]]" crossroads-hash="[[hash]]" crossroads-query="[[query]]"
+                                 crossroads-shared
+                                 crossroads-matched-data="{{sharedMatchData}}" crossroads-matched-routes="{{sharedMatchedRoutes}}">
+            </crossroadsjs-router>
+
+
+            <crossroadsjs-route-data crossroads-route-data="{{sectionRouteData}}"
+                                     crossroads-route-name="prefix_section"
+                                     crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
+            <p>Section param value from router: <strong>[[sectionRouteData.section]]</strong></p>
+
+            <a href="/prefix/items">List</a>
+            <a href="/prefix/other">Other</a>
+
+            <iron-pages class="sections" selected="[[sectionRouteData.section]]"
+                        attr-for-selected="section-name" fallback-selection="other">
+                <div section-name="items" class="card"><h1>List items section</h1>
+                    <ul>
+                        <li><a href="/prefix/items/view/1">Item 1</a></li>
+                        <li><a href="/prefix/items/view/2">Item 2</a></li>
+                        <li><a href="/prefix/items/view/3">Item 3</a></li>
+                    </ul>
+                    <crossroadsjs-route-data crossroads-route-data="{{subSectionRouteData}}"
+                                             crossroads-route-name="prefix_section_actionId"
+                                             crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
+                    <iron-pages class="sections" selected="[[subSectionRouteData.action]]"
+                                attr-for-selected="section-name">
+                        <div section-name="view" class="card">
+                            <p>Viewing item {{subSectionRouteData.objectId}}</p>
+                            <p><crossroadsjs-href crossroads-route-name="prefix_section_actionId"
+                                                  param-section$="items"
+                                                  param-action$="edit"
+                                                  param-object-id$="[[subSectionRouteData.action]]"
+                                                  param-slug*$="slug"
+                                                  crossroads-routes="[[routesHolder]]">
+                                <span>Edit</span></crossroadsjs-href></p>
+                        </div>
+                        <div section-name="edit" class="card">
+                            <p>Editing item {{subSectionRouteData.objectId}}</p>
+                            <p><crossroadsjs-href crossroads-route-name="prefix_section"
+                                                  param-section="items"
+                                                  param-hash-string="someanchor"
+                                                  param-query-object='{ "first": "a", "last": "b" }'
+                                                  crossroads-routes="[[routesHolder]]">
+                                <span>Go Back to list</span></crossroadsjs-href></p>
+                        </div>
+
+                    </iron-pages>
+
+                    </strong></div>
+                <div section-name="other" class="card"><h1>Some other section</h1></strong></div>
+            </iron-pages>
+
+
+            <div>
+                <h3>Manipulate the URL (try entering /prefix/list, /prefix/view/55 or /other)</h3>
+                <paper-input label="path" value="{{path}}" always-float-label></paper-input>
+            </div>
+
+            <p>routerMatchedData for #router1</p>
+            <object-debug data="[[routerMatchedData]]"></object-debug>
+            <p>routerMatchedRoutes for #router1</p>
+            <object-debug data="[[routerMatchedRoutes]]"></object-debug>
+
+            <p>otherMatchedData for #router2</p>
+            <object-debug data="[[otherMatchedData]]"></object-debug>
+            <p>otherMatchedRoutes for #router2</p>
+            <object-debug data="[[otherMatchedRoutes]]"></object-debug>
+
+            <p>sharedMatchData for #router3</p>
+            <object-debug data="[[sharedMatchData]]"></object-debug>
+            <p>sharedMatchedRoutes for #router3</p>
+            <object-debug data="[[sharedMatchedRoutes]]"></object-debug>
+
+
+        </template>
+    </demo-snippet>
+</div>
+</body>
+</html>

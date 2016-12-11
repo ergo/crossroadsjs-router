@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer.html">
+
+
+<dom-module id="crossroadsjs-route">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+    </template>
+
+    <script>
+        Polymer({
+
+            is: 'crossroadsjs-route',
+
+            properties: {
+                name: {
+                    type: String,
+                    value: function () {
+                        return ''
+                    }
+                },
+                route: String,
+                priority: Number,
+                segments: Array
+            },
+
+            ready: function () {
+                this.segments = this.name.split('.').slice(0, -1);
+            }
+
+        });
+    </script>
+</dom-module>

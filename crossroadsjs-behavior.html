@@ -1,0 +1,195 @@
+<script src="vendor/signals.js"></script>
+<script src="vendor/crossroads.js"></script>
+<script>
+
+
+    var CrossroadsRouterBehavior;
+    (function () {
+
+        function PolymerCrossroadsRouterException(message) {
+            this.message = message;
+            this.name = "PolymerCrossroadsRouterException";
+        }
+
+        var globalRegistry = {
+            routes: {}
+        };
+
+        CrossroadsRouterBehavior = {
+            properties: {
+                crossroadsDontPushGlobal: {
+                    type: Boolean,
+                    value: true
+                },
+                crossroadsNoEvents: {
+                    type: Boolean,
+                    value: false
+                },
+                crossroadsNamespace: {
+                    type: String,
+                    value: 'router-default',
+                    observer: 'setRegistryNamespaces'
+                },
+                crossoadsActive: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true,
+                    readOnly: true
+                },
+                crossroadsShared: {
+                    type: Boolean,
+                    value: false
+                },
+                crossroadsPath: String,
+                crossroadsQuery: String,
+                crossroadsHash: String,
+                crossroadsMatchedRoutes: {
+                    type: Array,
+                    value: function () {
+                        return [];
+                    },
+                    notify: true
+                },
+                crossroadsMatchedData: {
+                    type: Object,
+                    value: function () {
+                        return {};
+                    },
+                    notify: true
+                },
+                crossroadsRoutes: {
+                    type: Object,
+                    value: function () {
+                        return {}
+                    },
+                    notify: true
+                },
+                _routers: {
+                    type: Object,
+                    value: function () {
+                        return {}
+                    }
+                }
+            },
+            observers: [
+                'parseRoute(crossroadsPath, crossroadsQuery, crossroadsHash)'
+            ],
+            setRegistryNamespaces: function () {
+                globalRegistry.routes[this.crossroadsNamespace] = {};
+            },
+
+            getOrCreateRouterSegment: function (routeName) {
+                var allSegments = routeName.split('_');
+                var segments = allSegments.slice(0, -1);
+                var parentRouterName = segments.join('_');
+                if (segments.length == 0) {
+                    return this._routers['__base_router__'];
+                }
+                if (this._routers.hasOwnProperty(parentRouterName) === true) {
+                    return this._routers[parentRouterName];
+                }
+                else {
+                    var router = crossroads.create();
+                    router.normalizeFn = crossroads.NORM_AS_OBJECT;
+                    router.__PolymerSegmentName = parentRouterName;
+                    this._routers[router.__PolymerSegmentName] = router;
+                    var parentRouter = this.getOrCreateRouterSegment(parentRouterName);
+                    parentRouter.pipe(router);
+                }
+
+                if (this._routers.hasOwnProperty(parentRouterName)) {
+                    return this._routers[parentRouterName];
+                }
+                var exception = new PolymerCrossroadsRouterException('Parent router for route: ' + routeName + ' is not found')
+                throw exception;
+            },
+
+            addRoute: function (routeName, route, priority) {
+                var router = this.getOrCreateRouterSegment(routeName);
+                var route = router.addRoute(route, undefined, priority);
+                route.__PolymerRouteName = routeName;
+                globalRegistry.routes[route.__PolymerRouteName] = route;
+                this.set(['crossroadsRoutes', route.__PolymerRouteName], route);
+
+                function parsedRoute(data) {
+                    this.set(['crossroadsMatchedData', route.__PolymerRouteName], data || {});
+                    if (this.crossroadsMatchedRoutes.indexOf(routeName) === -1) {
+                        this.push('crossroadsMatchedRoutes', routeName);
+                    }
+                    this._setCrossoadsActive(true);
+                    this.fire('crossroadsjs-matched', {
+                        name: route.__PolymerRouteName,
+                        data: data
+                    });
+                }
+
+                route.matched.add(parsedRoute.bind(this));
+            },
+            parseRoute: function () {
+                this.set('crossroadsMatchedRoutes', []);
+                this.set('crossroadsMatchedData', {});
+                this._setCrossoadsActive(false);
+                var url = this.crossroadsPath;
+                if (this.crossroadsQuery) {
+                    url += '?' + this.crossroadsQuery
+                }
+                if (this.crossroadsHash) {
+                    url += '#' + this.crossroadsHash
+                }
+                if (this._routers && this._routers.hasOwnProperty('__base_router__')) {
+                    this._routers['__base_router__'].parse(url);
+                }
+
+            },
+            getRoute: function (routeName) {
+                if (!globalRegistry.routes.hasOwnProperty(routeName)) {
+                    var exception = new PolymerCrossroadsRouterException('Route named: ' + routeName + ' is not found')
+                    throw exception;
+                }
+                return routes[routeName];
+            },
+            attached: function () {
+                var baseRouter = crossroads.create();
+                baseRouter.__PolymerSegmentName = this.crossroadsNamespace;
+                baseRouter.normalizeFn = crossroads.NORM_AS_OBJECT;
+                this._routers['__base_router__'] = baseRouter;
+                var children = [];
+                // attach routes from existing namespace
+                if (!this.crossroadsShared) {
+                    globalRegistry.routes[this.crossroadsNamespace] = [];
+                    // register routes passed to router
+                    children = this.getEffectiveChildren();
+                    for (var x = 0; x < children.length; x++) {
+                        var route = children[x];
+                        globalRegistry.routes[this.crossroadsNamespace].push(
+                            {name: route.name, route: route.route, priority: route.priority});
+                    }
+
+                }
+                var routes = globalRegistry.routes[this.crossroadsNamespace];
+                for (var x = 0; x < routes.length; x++) {
+                    var route = routes[x];
+                    this.addRoute(route.name, route.route, route.priority);
+                }
+
+                this.parseRoute();
+            },
+            detached: function () {
+                for (var key in this._routers) {
+                    if (this._routers.hasOwnProperty(key)) {
+                        this._routers[key].removeAllRoutes();
+                        delete this._routers[key];
+                    }
+                }
+                for (var key in this.crossroadsRoutes) {
+                    if (this.crossroadsRoutes.hasOwnProperty(key)) {
+                        this.crossroadsRoutes[key].removeAllRoutes();
+                        delete this.crossroadsRoutes[key];
+                    }
+                }
+            }
+        };
+    })();
+
+
+</script>

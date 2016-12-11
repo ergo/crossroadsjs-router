@@ -1,0 +1,29 @@
+<script>
+    var CrossroadsRouteDataBehavior = {
+        properties: {
+            crossroadsRouteName: {
+                type: String,
+                value: function () {
+                    return ''
+                }
+            },
+            crossroadsMatchedData: {
+                type: Object,
+                value: function () {
+                    return {}
+                }
+            },
+            crossroadsRouteData: {
+                type: Object,
+                computed: 'crossroadsComputeRouteData(crossroadsRouteName, crossroadsMatchedData.*)',
+                notify: true
+            }
+        },
+        crossroadsComputeRouteData: function () {
+            if (this.crossroadsMatchedData.hasOwnProperty(this.crossroadsRouteName)) {
+                return this.crossroadsMatchedData[this.crossroadsRouteName];
+            }
+            return undefined;
+        }
+    };
+</script>

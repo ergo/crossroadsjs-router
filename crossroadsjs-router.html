@@ -1,0 +1,29 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="crossroadsjs-behavior.html">
+
+<!--
+`crossroadsjs-router`
+Crossroads.js router support for polymer
+
+@demo demo/index.html
+-->
+
+<dom-module id="crossroadsjs-router">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'crossroadsjs-router',
+      behaviors:[
+        CrossroadsRouterBehavior
+      ]
+    });
+  </script>
+</dom-module>

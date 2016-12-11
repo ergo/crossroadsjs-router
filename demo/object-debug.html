@@ -1,0 +1,38 @@
+<link rel="import" href="../../polymer/polymer.html">
+<dom-module id="object-debug">
+    <template>
+        <style>
+            pre{
+                padding: 5px;
+                border: 1px solid;
+            }
+        </style>
+        <slot></slot>
+        <pre>[[output]]</pre>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'object-debug',
+            properties: {
+                data: {
+                    type: Object
+                }
+            },
+            observers: [
+                '_dumpOut(data.*)'
+            ],
+
+            _dumpOut: function () {
+                try{
+                    this.output = JSON.stringify(this.data, null, 4);
+                }
+                catch(e){
+                    this.output = '<JSON.stringify ERROR>';
+                }
+
+            }
+        });
+
+    </script>
+</dom-module>
