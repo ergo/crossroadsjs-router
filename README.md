@@ -1,5 +1,8 @@
 # \<polymer-crossroadsjs\>
 
+
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/ergo/crossroadsjs-router)
+
 `crossroadsjs-router`
 Wraps Crossroads.js router object inside polymer element.
 
