@@ -7,8 +7,8 @@ You can use the router with both nested routes approach and "flat" routes - when
 every level of routes will have its own router created and `pipe()`'d to parent router.
 If you want to use route nesting the name of route has to contain `_` character as delimiter:
 
-first route name: master
-second route name: master_other
+- first route name: master
+- second route name: master_other
 
 Means that route `master_other` is piped into `master` router. Element will create all the necessary
 routers and chain them together. Remember that you need to pass the `subroute*` to route definitions
