@@ -2,7 +2,12 @@
   "name": "crossroadsjs-router",
   "version": "0.0.1",
   "description": "Crossroads.js router support for polymer",
-  "main": "crossroadsjs-router.html",
+  "main": [
+    "crossroadsjs-router.html",
+    "crossroadsjs-route-data.html",
+    "crossroadsjs-href.html",
+    "crossroadsjs-route.html"
+  ],
   "license": "Apache-2.0",
   "authors": [
     "Marcin Lulek"
