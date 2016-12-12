@@ -15,20 +15,35 @@ limitations under the License.
 
 -->
 <script>
+    /**
+     * @polymerBehavior
+     */
     var CrossroadsRouteDataBehavior = {
         properties: {
+
+            /**
+             * The name of route that will be used to extract the data from matched object
+             * If name of the route is empty then extract first key of the data
+             * this makes sense for non-nested routers
+             */
             crossroadsRouteName: {
                 type: String,
                 value: function () {
                     return ''
                 }
             },
+            /**
+             * Router matchedData result mapping
+             */
             crossroadsMatchedData: {
                 type: Object,
                 value: function () {
                     return {}
                 }
             },
+            /**
+             * Extracted data for route specified in `crossroadsRouteName`
+             */
             crossroadsRouteData: {
                 type: Object,
                 computed: 'crossroadsComputeRouteData(crossroadsRouteName, crossroadsMatchedData.*)',
@@ -36,8 +51,13 @@ limitations under the License.
             }
         },
         crossroadsComputeRouteData: function () {
-            if (this.crossroadsMatchedData.hasOwnProperty(this.crossroadsRouteName)) {
-                return this.crossroadsMatchedData[this.crossroadsRouteName];
+            var routeName = this.crossroadsRouteName;
+            if (this.crossroadsRouteName === ''){
+                var keys = Object.keys(this.crossroadsMatchedData);
+                routeName = keys[0];
+            }
+            if (this.crossroadsMatchedData.hasOwnProperty(routeName)) {
+                return this.crossroadsMatchedData[routeName];
             }
             return undefined;
         }

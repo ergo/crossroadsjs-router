@@ -17,7 +17,28 @@ limitations under the License.
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="crossroadsjs-href-behavior.html">
 
+<!--
+`<crossroadsjs-href>` element provides you with easy way to generate urls from
+named routes passed from `crossroadjs-router` elements.
+It automatically converts `param-*` attributes you passed to the element as
+to object used in `crossroads.interpolate()`.
 
+Parameters with dashed syntax will be converted into camelCase so `param-object-id`
+will become `objectId`.
+
+Example usage:
+
+    <crossroadsjs-href
+    crossroads-route-name="prefix_section_actionId"
+    param-section$="items"
+    param-action$="edit"
+    param-object-id$="[[elemId]]"
+    param-slug*$="slug"
+    param-hash-string="someanchor"
+    param-query-object='{ "first": "a", "last": "b" }'
+    crossroads-routes="[[routesHolder]]">
+    <span>Edit</span></crossroadsjs-href>
+-->
 <dom-module id="crossroadsjs-href">
     <template>
         <style>

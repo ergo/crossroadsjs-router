@@ -16,7 +16,18 @@ limitations under the License.
 -->
 <link rel="import" href="../polymer/polymer.html">
 
+<!--
+`<crossroadsjs-route>` element provides you with easy way to define routes
+for your router element.
 
+Example usage:
+
+    <crossroadsjs-router>
+        <crossroadsjs-route name="other" route="/other:subroute*:"></crossroadsjs-route>
+        <crossroadsjs-route name="other_section" route="/other/{section}:subroute*:"></crossroadsjs-route>
+    </crossroadsjs-router>
+
+-->
 <dom-module id="crossroadsjs-route">
     <template>
         <style>
@@ -32,13 +43,22 @@ limitations under the License.
             is: 'crossroadsjs-route',
 
             properties: {
+                /**
+                 * Name of the router to register
+                 */
                 name: {
                     type: String,
                     value: function () {
                         return ''
                     }
                 },
+                /**
+                 * Route definition in crossroadsjs format
+                 */
                 route: String,
+                /**
+                 * Priority for the route (if different from natural order)
+                 */
                 priority: Number,
                 segments: Array
             },

@@ -17,7 +17,19 @@ limitations under the License.
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="crossroadsjs-route-data-behavior.html">
 
+<!--
+`<crossroadsjs-route-data>` element provides you with easy way to extract
+route information from router matched data object into your templates via binding.
 
+Example usage:
+
+    <crossroadsjs-route-data crossroads-route-data="{{extractedDataObject}}"
+                             crossroads-route-name="route_name"
+                             crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
+
+    <p>Section param value from router: <strong>[[extractedDataObject.somevalue]]</strong></p>
+
+-->
 <dom-module id="crossroadsjs-route-data">
     <template>
         <style>

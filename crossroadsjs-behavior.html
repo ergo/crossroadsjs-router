@@ -31,34 +31,73 @@ limitations under the License.
             routes: {}
         };
 
+        /**
+         * @polymerBehavior
+         */
         CrossroadsRouterBehavior = {
             properties: {
+
+                /**
+                 * Currently not used, but if set to false it will push router and routes into
+                 * some window global for easier reuse in multiple application components
+                 */
                 crossroadsDontPushGlobal: {
                     type: Boolean,
                     value: true
                 },
+
+                /**
+                 * If set to true router will not fire any events
+                 */
                 crossroadsNoEvents: {
                     type: Boolean,
                     value: false
                 },
+                /**
+                 * Namespace used for router/namespace registry,
+                 * you need to modify this if you want to use multiple routers
+                 * with same route names, or simply want to
+                 * have multiple routes with different sets of route definitions
+                 */
                 crossroadsNamespace: {
                     type: String,
                     value: 'router-default',
                     observer: 'setRegistryNamespaces'
                 },
+                /**
+                 * Set to active if router matches some route fragments
+                 */
                 crossoadsActive: {
                     type: Boolean,
                     value: false,
                     reflectToAttribute: true,
                     readOnly: true
                 },
+                /**
+                 * If set to true router will try to load its routes from registry with same name
+                 * instead of route elements passed to it. You can have one master router
+                 * and then instantiate other routers that share routes with master router.
+                 */
                 crossroadsShared: {
                     type: Boolean,
                     value: false
                 },
+                /**
+                 * Path string usually provided by `iron-location` element
+                 */
                 crossroadsPath: String,
+                /**
+                 * Query string usually provided by `iron-location` element
+                 */
                 crossroadsQuery: String,
+                /**
+                 * Hash string usually provided by `iron-location` element
+                 */
                 crossroadsHash: String,
+                /**
+                 * Contains list of route names for all the segments that matched
+                 * path string
+                 */
                 crossroadsMatchedRoutes: {
                     type: Array,
                     value: function () {
@@ -66,6 +105,10 @@ limitations under the License.
                     },
                     notify: true
                 },
+                /**
+                 * Contains a mapping in form of {routeName1:values, routeName2:values}
+                 * of all nested routes that matches some routes and their extracted parameters
+                 */
                 crossroadsMatchedData: {
                     type: Object,
                     value: function () {
@@ -73,6 +116,9 @@ limitations under the License.
                     },
                     notify: true
                 },
+                /**
+                 * Mapping of routeName/route crossroadsjs Objects
+                 */
                 crossroadsRoutes: {
                     type: Object,
                     value: function () {
@@ -80,6 +126,9 @@ limitations under the License.
                     },
                     notify: true
                 },
+                /**
+                 * Mapping of nested routers
+                 */
                 _routers: {
                     type: Object,
                     value: function () {
@@ -88,7 +137,7 @@ limitations under the License.
                 }
             },
             observers: [
-                'parseRoute(crossroadsPath, crossroadsQuery, crossroadsHash)'
+                'parseRoute(crossroadsPath, crossroadsQuery)'
             ],
             setRegistryNamespaces: function () {
                 globalRegistry.routes[this.crossroadsNamespace] = {};
@@ -133,10 +182,12 @@ limitations under the License.
                         this.push('crossroadsMatchedRoutes', routeName);
                     }
                     this._setCrossoadsActive(true);
-                    this.fire('crossroadsjs-matched', {
-                        name: route.__PolymerRouteName,
-                        data: data
-                    });
+                    if (!this.crossroadsNoEvents){
+                        this.fire('crossroadsjs-matched', {
+                            name: route.__PolymerRouteName,
+                            data: data
+                        });
+                    }
                 }
 
                 route.matched.add(parsedRoute.bind(this));
@@ -148,9 +199,6 @@ limitations under the License.
                 var url = this.crossroadsPath;
                 if (this.crossroadsQuery) {
                     url += '?' + this.crossroadsQuery
-                }
-                if (this.crossroadsHash) {
-                    url += '#' + this.crossroadsHash
                 }
                 if (this._routers && this._routers.hasOwnProperty('__base_router__')) {
                     this._routers['__base_router__'].parse(url);

@@ -17,11 +17,65 @@ limitations under the License.
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="crossroadsjs-behavior.html">
 
+
+
 <!--
 `crossroadsjs-router`
-Crossroads.js router support for polymer
+Wraps Crossroads.js router object inside polymer element.
 
-@demo demo/index.html
+You can use the router with both nested routes approach and "flat" routes - when using nesting,
+every level of routes will have its own router created and `pipe()`'d to parent router.
+If you want to use route nesting the name of route has to contain `_` character as delimiter:
+
+first route name: master
+second route name: master_other
+
+Means that route `master_other` is piped into `master` router. Element will create all the necessary
+routers and chain them together. Remember that you need to pass the `subroute*` to route definitions
+for this to work correctly.
+
+Example flat usage:
+
+
+    <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+                         crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
+                         crossroads-matched-routes="{{routerMatchedRoutes}}"
+                         crossroads-routes="{{routesHolder}}">
+        <crossroadsjs-route name="index"
+                            route="/"></crossroadsjs-route>
+        <crossroadsjs-route name="prefix"
+                            route="/prefix"></crossroadsjs-route>
+        <crossroadsjs-route name="prefixSection"
+                            route="/prefix/{section}:?query:"></crossroadsjs-route>
+        <crossroadsjs-route name="prefixSectionActionId"
+                            route="/prefix/{section}/{action}/{objectId}/:slug*:"></crossroadsjs-route>
+    </crossroadsjs-router>
+
+Example nested usage:
+
+    <iron-location path="{{path}}" hash="{{hash}}" query="{{query}}"></iron-location>
+
+    <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+                         crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
+                         crossroads-matched-routes="{{routerMatchedRoutes}}"
+                         crossroads-routes="{{routesHolder}}">
+      <crossroadsjs-route name="index"
+                          route="/"></crossroadsjs-route>
+      <crossroadsjs-route name="prefix"
+                          route="/prefix/:subroute*:"></crossroadsjs-route>
+      <crossroadsjs-route name="prefix_section"
+                          route="/prefix/{section}/:?query::subroute*:"></crossroadsjs-route>
+      <crossroadsjs-route name="prefix_section_actionId"
+                          route="/prefix/{section}/{action}/{objectId}/:slug*:"></crossroadsjs-route>
+      <crossroadsjs-route name="admin_section"
+                          route="/admin/{section}:subroute*:"></crossroadsjs-route>
+      <crossroadsjs-route name="admin_section_actionId"
+                          route="/admin/{section}/{action}/{objectId}/:slug:"></crossroadsjs-route>
+    </crossroadsjs-router>
+
+
+@demo demo/demo.html Router with flat routes.
+@demo demo/demo2.html Router with nested routes.
 -->
 
 <dom-module id="crossroadsjs-router">
