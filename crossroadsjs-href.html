@@ -45,6 +45,15 @@ Example usage:
 <dom-module id="crossroadsjs-href">
     <template>
         <style>
+
+            a:link, a:visited{
+                @apply(--crossroadsjs-href-link-mixin);
+            }
+
+            a:hover{
+                @apply(--crossroadsjs-href-hover-mixin);
+            }
+
         </style>
 
         <a href="[[generatedLink]]">

@@ -4,11 +4,31 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/ergo/crossroadsjs-router)
 
 `crossroadsjs-router`
-Wraps Crossroads.js router object inside polymer element.
+Wraps [Crossroads.js](http://millermedeiros.github.io/crossroads.js) router inside polymer element.
 
-You can use the router with both nested routes approach and "flat" routes - when using nesting,
-every level of routes will have its own router created and `pipe()`'d to parent router.
-If you want to use route nesting the name of route has to contain `_` character as delimiter:
+What are the main advantages of this element over basic `app-route` element?
+
+It can do everything that `app-route` can and take advantage of `crossroads.js`
+functionalities including:
+
+- Named routes
+- URL generation from path definitions (for client side AND 
+  server side definitions)
+- Allows for global router setup
+- Supports for router nesting
+- Route data can contain information for every path segment matched
+- Provides elements for segment data extraction and link generation around other
+  elements
+- Optional matched route parameters typecasting
+- Additional match rule support for every rule definition
+- Additional per-route custom callback support when an url is matched or not found
+
+
+You can use the router with both nested routes approach and "flat" routes - 
+when using nesting, every level of routes will have its own router created 
+and `pipe()`'d to parent router.
+If you want to use route nesting the name of route has to contain `_` 
+character as delimiter:
 
 - first route name: master
 - second route name: master_other

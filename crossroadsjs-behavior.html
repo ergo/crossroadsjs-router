@@ -41,11 +41,17 @@ limitations under the License.
                  * Currently not used, but if set to false it will push router and routes into
                  * some window global for easier reuse in multiple application components
                  */
-                crossroadsDontPushGlobal: {
+                crossroadsPushGlobal: {
                     type: Boolean,
-                    value: true
+                    value: false
                 },
-
+                /**
+                 * Defines if router should typecast the values extracted from the the routes
+                 */
+                crossroadsTypecast: {
+                    type: Boolean,
+                    value: false
+                },
                 /**
                  * If set to true router will not fire any events
                  */
@@ -85,15 +91,24 @@ limitations under the License.
                 /**
                  * Path string usually provided by `iron-location` element
                  */
-                crossroadsPath: String,
+                crossroadsPath: {
+                    type: String,
+                    value: ""
+                },
                 /**
                  * Query string usually provided by `iron-location` element
                  */
-                crossroadsQuery: String,
+                crossroadsQuery: {
+                    type: String,
+                    value: ""
+                },
                 /**
                  * Hash string usually provided by `iron-location` element
                  */
-                crossroadsHash: String,
+                crossroadsHash: {
+                    type: String,
+                    value: ""
+                },
                 /**
                  * Contains list of route names for all the segments that matched
                  * path string
@@ -156,6 +171,8 @@ limitations under the License.
                 else {
                     var router = crossroads.create();
                     router.normalizeFn = crossroads.NORM_AS_OBJECT;
+                    console.log(parentRouterName, 'type', this.crossroadsTypecast);
+                    router.shouldTypecast = this.crossroadsTypecast;
                     router.__PolymerSegmentName = parentRouterName;
                     this._routers[router.__PolymerSegmentName] = router;
                     var parentRouter = this.getOrCreateRouterSegment(parentRouterName);
@@ -169,12 +186,16 @@ limitations under the License.
                 throw exception;
             },
 
-            addRoute: function (routeName, route, priority) {
+            addRoute: function (routeName, route, priority, neverMatch) {
                 var router = this.getOrCreateRouterSegment(routeName);
                 var route = router.addRoute(route, undefined, priority);
                 route.__PolymerRouteName = routeName;
                 globalRegistry.routes[route.__PolymerRouteName] = route;
                 this.set(['crossroadsRoutes', route.__PolymerRouteName], route);
+
+                if (neverMatch){
+                    return
+                }
 
                 function parsedRoute(data) {
                     this.set(['crossroadsMatchedData', route.__PolymerRouteName], data || {});
@@ -226,14 +247,14 @@ limitations under the License.
                     for (var x = 0; x < children.length; x++) {
                         var route = children[x];
                         globalRegistry.routes[this.crossroadsNamespace].push(
-                            {name: route.name, route: route.route, priority: route.priority});
+                            {name: route.name, route: route.route, priority: route.priority, neverMatch: route.neverMatch});
                     }
 
                 }
                 var routes = globalRegistry.routes[this.crossroadsNamespace];
                 for (var x = 0; x < routes.length; x++) {
                     var route = routes[x];
-                    this.addRoute(route.name, route.route, route.priority);
+                    this.addRoute(route.name, route.route, route.priority, route.neverMatch);
                 }
 
                 this.parseRoute();

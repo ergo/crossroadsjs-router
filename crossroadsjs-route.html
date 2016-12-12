@@ -62,7 +62,18 @@ Example usage:
                  * Priority for the route (if different from natural order)
                  */
                 priority: Number,
-                segments: Array
+                segments: Array,
+                /**
+                 * Marks route as never appendable for base router
+                 * handy if you want to have a global router that can generate
+                 * URL's for ALL routers but only match few routes
+                 * or hold non-app specific routes like REST API route definitions
+                 * for server-side requests
+                 */
+                neverMatch: {
+                    type: Boolean,
+                    value: false
+                }
             },
 
             ready: function () {

@@ -33,6 +33,31 @@
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
 
+        a:link, a:visited{
+            font-weight: bold;
+            display: inline-block;
+            padding: 5px;
+            color: #00b0ff;
+            text-decoration: none;
+        }
+        a:hover{
+            color: #0d47a1;
+        }
+
+        crossroadsjs-href {
+            --crossroadsjs-href-link-mixin: {
+                display: inline-block;
+                font-weight: bold;
+                padding: 5px;
+                color: #00b0ff;
+                text-decoration: none;
+            };
+            --crossroadsjs-href-hover-mixin: {
+                color: #0d47a1;
+            };
+        }
+
+
     </style>
 </head>
 <body>
@@ -43,9 +68,11 @@
         <template is="dom-bind">
             <iron-location path="{{path}}" hash="{{hash}}" query="{{query}}"></iron-location>
 
+            <!-- this router should cast objectId to Number -->
             <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
                                  crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
                                  crossroads-matched-routes="{{routerMatchedRoutes}}"
+                                 crossroads-typecast
                                  crossroads-routes="{{routesHolder}}">
                 <crossroadsjs-route name="index"
                                     route="/"></crossroadsjs-route>
@@ -83,8 +110,10 @@
                                      crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
             <p>Section param value from router: <strong>[[sectionRouteData.section]]</strong></p>
 
+            <p>Links:
             <a href="/prefix/items">List</a>
             <a href="/prefix/other">Other</a>
+            </p>
 
             <iron-pages class="sections" selected="[[sectionRouteData.section]]"
                         attr-for-selected="section-name" fallback-selection="other">

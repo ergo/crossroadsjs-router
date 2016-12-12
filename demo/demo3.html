@@ -62,27 +62,18 @@
 <body>
 
 <div class="vertical-section-container centered">
-    <h3>Basic crossroadsjs-router demo with "flat" routes</h3>
+    <h3>crossroadsjs-router chaining similar way as "app-router"</h3>
     <demo-snippet>
         <template is="dom-bind">
             <iron-location path="{{path}}" hash="{{hash}}" query="{{query}}"></iron-location>
 
-            <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+            <crossroadsjs-router id="router1"
+                                 crossroads-path="[[path]]" crossroads-hash="[[hash]]"
                                  crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
                                  crossroads-matched-routes="{{routerMatchedRoutes}}"
                                  crossroads-routes="{{routesHolder}}">
-                <crossroadsjs-route name="index"
-                                    route="/"></crossroadsjs-route>
-                <crossroadsjs-route name="prefix"
-                                    route="/prefix"></crossroadsjs-route>
                 <crossroadsjs-route name="prefixSection"
-                                    route="/prefix/{section}:?query:"></crossroadsjs-route>
-                <crossroadsjs-route name="prefixSectionActionId"
-                                    route="/prefix/{section}/{action}/{objectId}/:slug*:"></crossroadsjs-route>
-                <crossroadsjs-route name="adminSection"
-                                    route="/admin/{section}"></crossroadsjs-route>
-                <crossroadsjs-route name="adminSectionActionId"
-                                    route="/admin/{section}/{action}/{objectId}/:slug:"></crossroadsjs-route>
+                                    route="/prefix/{section}:tail*:"></crossroadsjs-route>
             </crossroadsjs-router>
 
             <crossroadsjs-route-data crossroads-route-data="{{sectionRouteData}}"
@@ -103,44 +94,55 @@
                         <li><a href="/prefix/items/view/2">Item 2</a></li>
                         <li><a href="/prefix/items/view/3">Item 3</a></li>
                     </ul>
-                    <iron-pages class="sections" selected="[[sectionRouteData.action]]"
+
+                    <!-- this could be our subelement START -->
+
+                    <crossroadsjs-router id="subrouter"
+                                         crossroads-path="[[path]]"
+                                         crossroads-matched-data="{{subRouterMatchedData}}"
+                                         crossroads-matched-routes="{{subRouterMatchedRoutes}}"
+                                         crossroads-routes="{{subRoutesHolder}}"
+                                         crossroads-namespace="subrouter">
+                        <crossroadsjs-route name="prefixSectionActionId"
+                                            route="/prefix/{section}/{action}/{objectId}"></crossroadsjs-route>
+                    </crossroadsjs-router>
+
+                    <crossroadsjs-route-data crossroads-route-data="{{dataFromSubRoute}}"
+                                             crossroads-matched-data="[[subRouterMatchedData]]"></crossroadsjs-route-data>
+
+                    <iron-pages class="sections" selected="[[dataFromSubRoute.action]]"
                                 attr-for-selected="section-name">
                         <div section-name="view" class="card">
-                            <p>Viewing item {{sectionRouteData.objectId}}</p>
-                            <p><crossroadsjs-href crossroads-route-name="prefixSectionActionId"
-                                                  param-section$="items"
-                                                  param-action$="edit"
-                                                  param-object-id$="[[sectionRouteData.objectId]]"
-                                                  param-slug*$="slug"
-                                                  crossroads-routes="[[routesHolder]]">
-                                <span>Edit</span></crossroadsjs-href></p>
+                            <p>Viewing item {{dataFromSubRoute.objectId}}</p>
+                            <p>
+                                <crossroadsjs-href crossroads-route-name="prefixSectionActionId"
+                                                   param-section$="items"
+                                                   param-action$="edit"
+                                                   param-object-id$="[[dataFromSubRoute.objectId]]"
+                                                   param-slug*$="slug"
+                                                   crossroads-routes="[[subRoutesHolder]]">
+                                    <span>Edit</span></crossroadsjs-href>
+                            </p>
                         </div>
                         <div section-name="edit" class="card">
-                            <p>Editing item {{sectionRouteData.objectId}}</p>
-                            <p><crossroadsjs-href crossroads-route-name="prefixSection"
-                                                  param-section="items"
-                                                  param-hash-string="someanchor"
-                                                  param-query-object='{ "first": "a", "last": "b" }'
-                                                  crossroads-routes="[[routesHolder]]">
-                                <span>Go Back to list</span></crossroadsjs-href></p>
+                            <p>Editing item {{dataFromSubRoute.objectId}}</p>
+                            <p>
+                                <crossroadsjs-href crossroads-route-name="prefixSection"
+                                                   param-section="items"
+                                                   param-hash-string="someanchor"
+                                                   param-query-object='{ "first": "a", "last": "b" }'
+                                                   crossroads-routes="[[routesHolder]]">
+                                    <span>Go Back to list</span></crossroadsjs-href>
+                            </p>
                         </div>
 
                     </iron-pages>
 
+                    <!-- this could be our subelement END -->
+
                     </strong></div>
                 <div section-name="other" class="card"><h1>Some other section</h1></strong></div>
             </iron-pages>
-
-
-            <div>
-                <h3>Manipulate the URL (try entering /prefix/list, /prefix/view/55 or /other)</h3>
-                <paper-input label="path" value="{{path}}" always-float-label></paper-input>
-            </div>
-
-            <p>routerMatchedData for #router1</p>
-            <object-debug data="[[routerMatchedData]]"></object-debug>
-            <p>routerMatchedRoutes for #router1</p>
-            <object-debug data="[[routerMatchedRoutes]]"></object-debug>
 
         </template>
     </demo-snippet>

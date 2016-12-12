@@ -31,6 +31,15 @@ limitations under the License.
                 }
             },
             /**
+             * Prefix for the generated urls
+             */
+            crossroadsPrefix: {
+                type: String,
+                value: function () {
+                    return ''
+                }
+            },
+            /**
              * Query object that will be used for route.interpolate(),
              * will be dynamically appended to object holding interpolation parameters
              */
@@ -81,7 +90,6 @@ limitations under the License.
         },
 
         crossroadsComputedLink: function () {
-            console.log('crossroadsComputedLink');
             if (this.crossroadsRoutes.hasOwnProperty(this.crossroadsRouteName)) {
                 var route = this.crossroadsRoutes[this.crossroadsRouteName];
                 var routeParams = {};
@@ -111,6 +119,9 @@ limitations under the License.
                 });
                 if (shouldGenerate) {
                     var url = route.interpolate(routeParams);
+                    if (this.crossroadsPrefix) {
+                        url = this.crossroadsPrefix + url;
+                    }
                     if (this.paramHashString) {
                         url += '#' + this.paramHashString;
                     }
