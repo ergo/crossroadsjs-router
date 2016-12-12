@@ -29,8 +29,9 @@ you can achieve functionality comparable to solutions like `angular-ui-router`
 
 
     |---------------------------------------------------------------|
-    | <crossroadsjs-router> provides /{section}                     |
+    | <crossroadsjs-router>                                         |
     | <crossroadjs-route-data data="{topRouteData}">                |
+    | provides /{section}                                           |
     |---------------------------------------------------------------|
                                  |
                                  |
@@ -38,6 +39,7 @@ you can achieve functionality comparable to solutions like `angular-ui-router`
     | <iron-pages selected={topRouteData.section}>                  |
     | <item1>                                                       |
     | <crossroadjs-route-data data={subSectionData}>                |
+    | provides parameters for nested iron-pages to act upon         |
     | .... nested segment with additional iron-pages and route-data |
     | </item1>                                                      |
     | <item2>                                                       |
