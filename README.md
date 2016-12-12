@@ -23,10 +23,34 @@ functionalities including:
 - Additional match rule support for every rule definition
 - Additional per-route custom callback support when an url is matched or not found
 
+Using `crossroadsjs-route-data` with nested routes and element like `iron-lazy-pages`
+you can achieve functionality comparable to solutions like `angular-ui-router`
+(see the nested routes demo).
+
+
+    |---------------------------------------------------------------|
+    | <crossroadsjs-router> provides /{section}                     |
+    | <crossroadjs-route-data data="{topRouteData}">                |
+    |---------------------------------------------------------------|
+                                 |
+                                 |
+    |---------------------------------------------------------------|
+    | <iron-pages selected={topRouteData.section}>                  |
+    | <item1>                                                       |
+    | <crossroadjs-route-data data={subSectionData}>                |
+    | .... nested segment with additional iron-pages and route-data |
+    | </item1>                                                      |
+    | <item2>                                                       |
+    | <crossroadjs-route-data data={subSectionData}>                |
+    | .... nested segment with additional iron-pages and route-data |
+    | </item2>                                                      |
+    |---------------------------------------------------------------|                                 
+
 
 You can use the router with both nested routes approach and "flat" routes - 
 when using nesting, every level of routes will have its own router created 
 and `pipe()`'d to parent router.
+
 If you want to use route nesting the name of route has to contain `_` 
 character as delimiter:
 
