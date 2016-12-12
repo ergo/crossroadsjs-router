@@ -27,28 +27,6 @@ Using `crossroadsjs-route-data` with nested routes and element like `iron-lazy-p
 you can achieve functionality comparable to solutions like `angular-ui-router`
 (see the nested routes demo).
 
-
-    |---------------------------------------------------------------|
-    | <crossroadsjs-router>                                         |
-    | <crossroadjs-route-data data="{topRouteData}">                |
-    | provides /{section}                                           |
-    |---------------------------------------------------------------|
-                                 |
-                                 |
-    |---------------------------------------------------------------|
-    | <iron-pages selected={topRouteData.section}>                  |
-    | <item1>                                                       |
-    | <crossroadjs-route-data data={subSectionData}>                |
-    | provides parameters for nested iron-pages to act upon         |
-    | .... nested segment with additional iron-pages and route-data |
-    | </item1>                                                      |
-    | <item2>                                                       |
-    | <crossroadjs-route-data data={subSectionData}>                |
-    | .... nested segment with additional iron-pages and route-data |
-    | </item2>                                                      |
-    |---------------------------------------------------------------|                                 
-
-
 You can use the router with both nested routes approach and "flat" routes - 
 when using nesting, every level of routes will have its own router created 
 and `pipe()`'d to parent router.
