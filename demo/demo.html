@@ -80,17 +80,17 @@
                     <iron-pages class="sections" selected="[[sectionRouteData.action]]"
                                 attr-for-selected="section-name">
                         <div section-name="view" class="card">
-                            <p>Viewing item {{subSectionRouteData.objectId}}</p>
+                            <p>Viewing item {{sectionRouteData.objectId}}</p>
                             <p><crossroadsjs-href crossroads-route-name="prefixSectionActionId"
                                                   param-section$="items"
                                                   param-action$="edit"
-                                                  param-object-id$="[[sectionRouteData.action]]"
+                                                  param-object-id$="[[sectionRouteData.objectId]]"
                                                   param-slug*$="slug"
                                                   crossroads-routes="[[routesHolder]]">
                                 <span>Edit</span></crossroadsjs-href></p>
                         </div>
                         <div section-name="edit" class="card">
-                            <p>Editing item {{subSectionRouteData.objectId}}</p>
+                            <p>Editing item {{sectionRouteData.objectId}}</p>
                             <p><crossroadsjs-href crossroads-route-name="prefixSection"
                                                   param-section="items"
                                                   param-hash-string="someanchor"

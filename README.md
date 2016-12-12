@@ -1,6 +1,94 @@
 # \<polymer-crossroadsjs\>
 
-Crossroads.js router support for polymer
+`crossroadsjs-router`
+Wraps Crossroads.js router object inside polymer element.
+
+You can use the router with both nested routes approach and "flat" routes - when using nesting,
+every level of routes will have its own router created and `pipe()`'d to parent router.
+If you want to use route nesting the name of route has to contain `_` character as delimiter:
+
+first route name: master
+second route name: master_other
+
+Means that route `master_other` is piped into `master` router. Element will create all the necessary
+routers and chain them together. Remember that you need to pass the `subroute*` to route definitions
+for this to work correctly.
+
+Example flat usage:
+
+
+    <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+                         crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
+                         crossroads-matched-routes="{{routerMatchedRoutes}}"
+                         crossroads-routes="{{routesHolder}}">
+        <crossroadsjs-route name="index"
+                            route="/"></crossroadsjs-route>
+        <crossroadsjs-route name="prefix"
+                            route="/prefix"></crossroadsjs-route>
+        <crossroadsjs-route name="prefixSection"
+                            route="/prefix/{section}:?query:"></crossroadsjs-route>
+        <crossroadsjs-route name="prefixSectionActionId"
+                            route="/prefix/{section}/{action}/{objectId}/:slug*:"></crossroadsjs-route>
+    </crossroadsjs-router>
+
+Example nested usage:
+
+    <iron-location path="{{path}}" hash="{{hash}}" query="{{query}}"></iron-location>
+
+    <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+                         crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
+                         crossroads-matched-routes="{{routerMatchedRoutes}}"
+                         crossroads-routes="{{routesHolder}}">
+      <crossroadsjs-route name="index"
+                          route="/"></crossroadsjs-route>
+      <crossroadsjs-route name="prefix"
+                          route="/prefix/:subroute*:"></crossroadsjs-route>
+      <crossroadsjs-route name="prefix_section"
+                          route="/prefix/{section}/:?query::subroute*:"></crossroadsjs-route>
+      <crossroadsjs-route name="prefix_section_actionId"
+                          route="/prefix/{section}/{action}/{objectId}/:slug*:"></crossroadsjs-route>
+      <crossroadsjs-route name="admin_section"
+                          route="/admin/{section}:subroute*:"></crossroadsjs-route>
+      <crossroadsjs-route name="admin_section_actionId"
+                          route="/admin/{section}/{action}/{objectId}/:slug:"></crossroadsjs-route>
+    </crossroadsjs-router>
+
+
+### Supporting elements.
+
+#### <crossroadsjs-route-data>
+
+`<crossroadsjs-route-data>` element provides you with easy way to extract
+route information from router matched data object into your templates via binding.
+
+Example usage:
+
+    <crossroadsjs-route-data crossroads-route-data="{{extractedDataObject}}"
+                             crossroads-route-name="route_name"
+                             crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
+
+    <p>Section param value from router: <strong>[[extractedDataObject.somevalue]]</strong></p>
+
+#### <crossroadsjs-href>
+
+`<crossroadsjs-href>` element provides you with easy way to generate urls from
+named routes passed from `crossroadjs-router` elements.
+It automatically converts `param-*` attributes you passed to the element as
+to object used in `crossroads.interpolate()`.
+
+Example usage:
+
+    <crossroadsjs-href
+    crossroads-route-name="prefix_section_actionId"
+    param-section$="items"
+    param-action$="edit"
+    param-object-id$="[[elemId]]"
+    param-slug*$="slug"
+    param-hash-string="someanchor"
+    param-query-object='{ "first": "a", "last": "b" }'
+    crossroads-routes="[[routesHolder]]">
+    <span>Edit</span></crossroadsjs-href>
+
 
 ## Install the Polymer-CLI
 
