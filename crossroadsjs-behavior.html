@@ -212,17 +212,18 @@ limitations under the License.
                 route.matched.add(parsedRoute.bind(this));
             },
             parseRoute: function () {
-                this.set('crossroadsMatchedRoutes', []);
-                this.set('crossroadsMatchedData', {});
-                this._setCrossoadsActive(false);
-                var url = this.crossroadsPath;
-                if (this.crossroadsQuery) {
-                    url += '?' + this.crossroadsQuery
-                }
-                if (this._routers && this._routers.hasOwnProperty('__base_router__')) {
-                    this._routers['__base_router__'].parse(url);
-                }
-
+                this.debounce('crossroadsComputeLink', function () {
+                    this.set('crossroadsMatchedRoutes', []);
+                    this.set('crossroadsMatchedData', {});
+                    this._setCrossoadsActive(false);
+                    var url = this.crossroadsPath;
+                    if (this.crossroadsQuery) {
+                        url += '?' + this.crossroadsQuery
+                    }
+                    if (this._routers && this._routers.hasOwnProperty('__base_router__')) {
+                        this._routers['__base_router__'].parse(url);
+                    }
+                }, 50);
             },
             getRoute: function (routeName) {
                 if (!globalRegistry.routes.hasOwnProperty(routeName)) {

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>crossroadsjs-router demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-pages/iron-pages.html">
+    <link rel="import" href="../../iron-location/iron-location.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
+    <link rel="import" href="../crossroadsjs-router.html">
+    <link rel="import" href="../crossroadsjs-route.html">
+    <link rel="import" href="../crossroadsjs-route-data.html">
+    <link rel="import" href="../crossroadsjs-href.html">
+    <link rel="import" href="object-debug.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+        .vertical-section-container {
+            max-width: 100%;
+        }
+
+        crossroadsjs-href {
+            --crossroadsjs-href-link-mixin: {
+                display: inline-block;
+                font-weight: bold;
+                padding: 5px;
+                color: #00b0ff;
+                text-decoration: none;
+            };
+            --crossroadsjs-href-hover-mixin: {
+                color: #0d47a1;
+            };
+        }
+
+
+        demo-snippet{
+            --demo-snippet-code: {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="vertical-section-container centered">
+    <h3>Basic crossroadsjs-route-data example</h3>
+    <demo-snippet>
+        <template is="dom-bind">
+
+            <crossroadsjs-router id="router1"
+                                 crossroads-path="/prefix/section-name/view-action/id999?param=1&param=2&paramX=X"
+                                 crossroads-matched-data="{{routerMatchedData}}"
+                                 crossroads-matched-routes="{{routerMatchedRoutes}}"
+                                 crossroads-typecast
+                                 crossroads-routes="{{routesHolder}}">
+                <crossroadsjs-route name="index"
+                                    route="/"></crossroadsjs-route>
+                <crossroadsjs-route name="prefix"
+                                    route="/prefix/:subroute*:"></crossroadsjs-route>
+                <crossroadsjs-route name="prefix_section"
+                                    route="/prefix/{section}/:subroute*:"></crossroadsjs-route>
+                <crossroadsjs-route name="prefix_section_actionId"
+                                    route="/prefix/{section}/{action}/{objectId}:?query:"></crossroadsjs-route>
+            </crossroadsjs-router>
+
+            <p>Path is: <i>/prefix/section-name/view-action/id999/my-slug?param=1&amp;param=2&amp;paramX=X</i></p>
+
+            <p>Matched data for route: <strong>prefix</strong></p>
+
+            <crossroadsjs-route-data crossroads-route-data="{{prefixRouteData}}"
+                                     crossroads-route-name="prefix"
+                                     crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
+
+            <object-debug data="[[prefixRouteData]]"></object-debug>
+
+            <p>Matched data for route: <strong>prefix_section</strong></p>
+
+            <crossroadsjs-route-data crossroads-route-data="{{prefix_sectionRouteData}}"
+                                     crossroads-route-name="prefix_section"
+                                     crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
+
+            <object-debug data="[[prefix_sectionRouteData]]"></object-debug>
+
+            <p>Matched data for route: <strong>prefix_section_actionId</strong></p>
+
+            <crossroadsjs-route-data crossroads-route-data="{{prefix_section_actionIdRouteData}}"
+                                     crossroads-route-name="prefix_section_actionId"
+                                     crossroads-matched-data="[[routerMatchedData]]"></crossroadsjs-route-data>
+
+            <object-debug data="[[prefix_section_actionIdRouteData]]"></object-debug>
+
+        </template>
+    </demo-snippet>
+</div>
+</body>
+</html>

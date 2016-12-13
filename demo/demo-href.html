@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>crossroadsjs-router demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../iron-pages/iron-pages.html">
+    <link rel="import" href="../../iron-location/iron-location.html">
+    <link rel="import" href="../../paper-input/paper-input.html">
+    <link rel="import" href="../crossroadsjs-router.html">
+    <link rel="import" href="../crossroadsjs-route.html">
+    <link rel="import" href="../crossroadsjs-route-data.html">
+    <link rel="import" href="../crossroadsjs-href.html">
+    <link rel="import" href="object-debug.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+        .vertical-section-container {
+            max-width: 100%;
+        }
+
+        crossroadsjs-href {
+            --crossroadsjs-href-link-mixin: {
+                display: inline-block;
+                font-weight: bold;
+                padding: 5px;
+                color: #00b0ff;
+                text-decoration: none;
+            };
+            --crossroadsjs-href-hover-mixin: {
+                color: #0d47a1;
+            };
+        }
+
+
+        demo-snippet{
+            --demo-snippet-code: {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="vertical-section-container centered">
+    <h3>Basic crossroadsjs-href example</h3>
+    <demo-snippet>
+        <template is="dom-bind">
+            <iron-location path="{{path}}" hash="{{hash}}" query="{{query}}"></iron-location>
+
+            <crossroadsjs-router id="router1" crossroads-path="[[path]]" crossroads-hash="[[hash]]"
+                                 crossroads-query="[[query]]" crossroads-matched-data="{{routerMatchedData}}"
+                                 crossroads-matched-routes="{{routerMatchedRoutes}}"
+                                 crossroads-routes="{{routesHolder}}">
+                <crossroadsjs-route name="routeName"
+                                    route="/prefix/{section}/{action}/{objectId}/:slug*::?query:"></crossroadsjs-route>
+            </crossroadsjs-router>
+
+            <p>generated link: [[generatedLink]]</p>
+
+            <crossroadsjs-href
+                crossroads-route-name="routeName"
+                generated-link="{{generatedLink}}"
+                param-section$="items"
+                param-action$="edit"
+                param-object-id$="7"
+                param-slug*$="slug"
+                param-hash-string$="someanchor"
+                query-object='{"special":"a1","other":"b1","multiple":["1","2","3"]}'
+                query-param-first$="a"
+                query-param-last$="b"
+                query-param-camel-cased$="camelCase"
+                crossroads-routes="[[routesHolder]]">
+                <span>Some text</span></crossroadsjs-href>
+
+
+        </template>
+    </demo-snippet>
+</div>
+</body>
+</html>

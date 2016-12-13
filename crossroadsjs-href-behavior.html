@@ -64,14 +64,15 @@ limitations under the License.
                 }
             },
             /**
-             * Query object that will be used for route.interpolate(),
+             * Query object for route.interpolate(),
              * will be dynamically appended to object holding interpolation parameters
              */
-            paramQueryObject: {
+            queryObject: {
                 type: Object,
                 value: function () {
                     return {}
-                }
+                },
+                observer: 'crossroadsComputeLink'
             },
             /**
              * Hash string that will be appended to the generated url
@@ -106,58 +107,71 @@ limitations under the License.
         },
 
         attributeChanged: function (name, type) {
-            this.crossroadsComputedLink();
+            this.crossroadsComputeLink();
         },
 
         attached: function () {
-            this.crossroadsComputedLink();
+            this.crossroadsComputeLink();
         },
 
-        getRoute: function(routeName){
-            if (this.crossroadsRoutes.hasOwnProperty(this.crossroadsRouteName)) {
+        getRoute: function (routeName) {
+            if (this.crossroadsRoutes &&
+                this.crossroadsRoutes.hasOwnProperty(this.crossroadsRouteName)) {
                 return this.crossroadsRoutes[this.crossroadsRouteName];
             }
             return null;
         },
-        crossroadsComputedLink: function () {
-            var route = this.getRoute(this.crossroadsRouteName);
-            if (route !== null) {
-                var routeParams = {};
-                for (var x = 0; x < this.attributes.length; x++) {
-                    var item = this.attributes[x];
-                    if (item.name.indexOf('param-') === 0) {
-                        var name = item.name.slice(6);
-                        // remove binding sign from non-binding attributes
-                        if (name.slice(-1) === '$') {
-                            name = name.slice(0, -1);
+        crossroadsComputeLink: function () {
+            this.debounce('crossroadsComputeLink', function () {
+                var route = this.getRoute(this.crossroadsRouteName);
+                if (route !== null) {
+                    var queryParams = JSON.parse(JSON.stringify(this.queryObject));
+                    var routeParams = {};
+                    for (var x = 0; x < this.attributes.length; x++) {
+                        var item = this.attributes[x];
+                        if (item.name.indexOf('param-') === 0) {
+                            var name = item.name.slice(6);
+                            // remove binding sign from non-binding attributes
+                            if (name.slice(-1) === '$') {
+                                name = name.slice(0, -1);
+                            }
+                            var segments = name.split('-');
+                            name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
+                            routeParams[name] = item.value;
                         }
-                        var segments = name.split('-');
-                        name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
-                        routeParams[name] = item.value;
+                        else if (item.name.indexOf('query-param-') === 0) {
+                            var name = item.name.slice(12);
+                            // remove binding sign from non-binding attributes
+                            if (name.slice(-1) === '$') {
+                                name = name.slice(0, -1);
+                            }
+                            var segments = name.split('-');
+                            name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
+                            queryParams[name] = item.value;
+                        }
+                    }
+                    if (route._paramsIds.indexOf('?query') !== -1) {
+                        routeParams['query'] = queryParams;
+                        routeParams['?query'] = queryParams;
+                    }
+                    var shouldGenerate = true;
+                    route._paramsIds.map(function (item) {
+                        if (route._optionalParamsIds.indexOf(item) === -1 && !routeParams.hasOwnProperty(item)) {
+                            shouldGenerate = false;
+                        }
+                    });
+                    if (shouldGenerate) {
+                        var url = route.interpolate(routeParams);
+                        if (this.crossroadsPrefix) {
+                            url = this.crossroadsPrefix + url;
+                        }
+                        if (this.paramHashString) {
+                            url += '#' + this.paramHashString;
+                        }
+                        this.generatedLink = url;
                     }
                 }
-                if (route._paramsIds.indexOf('?query') !== -1) {
-                    routeParams['query'] = this.paramQueryObject;
-                    routeParams['?query'] = this.paramQueryObject;
-                }
-                var shouldGenerate = true;
-                route._paramsIds.map(function (item) {
-                    if (route._optionalParamsIds.indexOf(item) === -1 &&
-                        !routeParams.hasOwnProperty(item)) {
-                        shouldGenerate = false;
-                    }
-                });
-                if (shouldGenerate) {
-                    var url = route.interpolate(routeParams);
-                    if (this.crossroadsPrefix) {
-                        url = this.crossroadsPrefix + url;
-                    }
-                    if (this.paramHashString) {
-                        url += '#' + this.paramHashString;
-                    }
-                    this.generatedLink = url;
-                }
-            }
+            }, 50);
         }
     };
 </script>

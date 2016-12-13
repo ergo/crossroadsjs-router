@@ -26,21 +26,35 @@ to object used in `crossroads.interpolate()`.
 Parameters with dashed syntax will be converted into camelCase so `param-object-id`
 will become `objectId`.
 
+Parameters starting with `query-param-` will be converted into query object keys.
+Parameters starting with `query-multi-param-` will be converted into query object arrays.
+
 Example usage:
 
     <crossroadsjs-href
-    crossroads-route-name="prefix_section_actionId"
-    param-section$="items"
-    param-action$="edit"
-    param-object-id$="[[elemId]]"
-    param-slug*$="slug"
-    param-hash-string="someanchor"
-    param-query-object='{ "first": "a", "last": "b" }'
-    crossroads-routes="[[routesHolder]]">
-    <span>Edit</span></crossroadsjs-href>
+        crossroads-route-name="routeName"
+        generated-link="{{generatedLink}}"
+        param-section$="items"
+        param-action$="edit"
+        param-object-id$="7"
+        param-slug*$="slug"
+        param-hash-string$="someanchor"
+        query-object='{"special":"a1","other":"b1","multiple":["1","2","3"]}'
+        query-param-first$="a"
+        query-param-last$="b"
+        query-param-camel-cased$="camelCase"
+        crossroads-routes="[[routesHolder]]">
+        <span>Some text</span></crossroadsjs-href>
+
+
+Custom property | Description | Default
+----------------|-------------|----------
+`--crossroadsjs-href-link-mixin` | Mixin applied to a:link, a:visited | `{}`
+`--crossroadsjs-href-hover-mixin` | Mixin applied to a:hover| `{}`
 
 
 @element crossroadsjs-href
+@demo demo/demo-href.html crossroadsjs-href element demo
 -->
 <dom-module id="crossroadsjs-href">
     <template>
