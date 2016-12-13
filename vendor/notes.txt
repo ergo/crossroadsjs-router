@@ -1,0 +1,3 @@
+crossroads.js comes from my fork on https://github.com/ergo/crossroads.js
+
+contains a patch to fix trailing slashes that are generated incorrectly.
