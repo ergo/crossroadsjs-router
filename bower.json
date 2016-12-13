@@ -16,6 +16,9 @@
     "web-components",
     "polymer",
     "router",
+    "routing",
+    "url",
+    "routes",
     "crossroadsjs"
   ],
   "dependencies": {

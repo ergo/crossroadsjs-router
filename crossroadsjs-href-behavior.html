@@ -19,6 +19,12 @@ limitations under the License.
      *
      * @polymerBehavior
      */
+
+    function PolymerCrossroadsHrefException(message) {
+        this.message = message;
+        this.name = "PolymerCrossroadsHrefException";
+    }
+
     var CrossroadsHrefBehavior = {
         properties: {
             /**
@@ -34,6 +40,24 @@ limitations under the License.
              * Prefix for the generated urls
              */
             crossroadsPrefix: {
+                type: String,
+                value: function () {
+                    return ''
+                }
+            },
+            /**
+             * Link `target` property
+             */
+            crossroadsLinkTarget: {
+                type: String,
+                value: function () {
+                    return ''
+                }
+            },
+            /**
+             * Link `rel` property
+             */
+            crossroadsLinkRel: {
                 type: String,
                 value: function () {
                     return ''
@@ -89,9 +113,15 @@ limitations under the License.
             this.crossroadsComputedLink();
         },
 
-        crossroadsComputedLink: function () {
+        getRoute: function(routeName){
             if (this.crossroadsRoutes.hasOwnProperty(this.crossroadsRouteName)) {
-                var route = this.crossroadsRoutes[this.crossroadsRouteName];
+                return this.crossroadsRoutes[this.crossroadsRouteName];
+            }
+            return null;
+        },
+        crossroadsComputedLink: function () {
+            var route = this.getRoute(this.crossroadsRouteName);
+            if (route !== null) {
                 var routeParams = {};
                 for (var x = 0; x < this.attributes.length; x++) {
                     var item = this.attributes[x];

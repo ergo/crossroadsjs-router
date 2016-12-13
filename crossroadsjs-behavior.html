@@ -170,7 +170,6 @@ limitations under the License.
                 else {
                     var router = crossroads.create();
                     router.normalizeFn = crossroads.NORM_AS_OBJECT;
-                    console.log(parentRouterName, 'type', this.crossroadsTypecast);
                     router.shouldTypecast = this.crossroadsTypecast;
                     router.__PolymerSegmentName = parentRouterName;
                     this._routers[router.__PolymerSegmentName] = router;

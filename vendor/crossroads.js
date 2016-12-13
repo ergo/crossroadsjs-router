@@ -1,7 +1,7 @@
 /** @license
  * crossroads <http://millermedeiros.github.com/crossroads.js/>
  * Author: Miller Medeiros | MIT License
- * v0.12.2 (2015/07/31 18:37)
+ * v0.12.2 (2016/12/13 01:24)
  */
 
 (function () {
@@ -680,11 +680,18 @@ var factory = function (signals) {
             if (! TOKENS.OS.trail) {
                 TOKENS.OS.trail = new RegExp('(?:'+ TOKENS.OS.id +')+$');
             }
-
+            // we need to replace the query separator with something else
+            // because .replace(TOKENS.OS.rRestore, '/') would place incorrect
+            // trailing slash and trailing slashes have meaning
+            if (! TOKENS.OS.fixQueryOptional) {
+                TOKENS.OS.fixQueryOptional = new RegExp('(:\\?|\\{\\?)');
+            }
             return pattern
+                        .replace(TOKENS.OS.fixQueryOptional, '__TRAILING_QUERY__$1')
                         .replace(TOKENS.OS.rgx, TOKENS.OS.save)
                         .replace(PARAMS_REGEXP, replaceFn)
                         .replace(TOKENS.OS.trail, '') // remove trailing
+                        .replace('__TRAILING_QUERY__', '') // remove saving token
                         .replace(TOKENS.OS.rRestore, '/'); // add slash between segments
         }
 
