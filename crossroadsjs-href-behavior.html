@@ -115,12 +115,24 @@ limitations under the License.
         },
 
         getRoute: function (routeName) {
-            if (this.crossroadsRoutes &&
-                this.crossroadsRoutes.hasOwnProperty(this.crossroadsRouteName)) {
-                return this.crossroadsRoutes[this.crossroadsRouteName];
+            if (this.crossroadsRoutes && this.crossroadsRoutes.hasOwnProperty(routeName)) {
+                return this.crossroadsRoutes[routeName];
             }
             return null;
         },
+
+        interpolate: function(routeName, interpolateParams, crossroadsPrefix, paramHashString){
+            var route = this.getRoute(routeName);
+            var url = route.interpolate(interpolateParams);
+            if (crossroadsPrefix) {
+                url = crossroadsPrefix + url;
+            }
+            if (paramHashString) {
+                url += '#' + paramHashString;
+            }
+            return url;
+        },
+
         crossroadsComputeLink: function () {
             this.debounce('crossroadsComputeLink', function () {
                 var route = this.getRoute(this.crossroadsRouteName);
@@ -161,13 +173,8 @@ limitations under the License.
                         }
                     });
                     if (shouldGenerate) {
-                        var url = route.interpolate(routeParams);
-                        if (this.crossroadsPrefix) {
-                            url = this.crossroadsPrefix + url;
-                        }
-                        if (this.paramHashString) {
-                            url += '#' + this.paramHashString;
-                        }
+                        var url = this.interpolate(this.crossroadsRouteName,
+                            routeParams, this.crossroadsPrefix, this.paramHashString);
                         this.generatedLink = url;
                     }
                 }
