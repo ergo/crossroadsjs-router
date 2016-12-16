@@ -1,6 +1,6 @@
 {
   "name": "crossroadsjs-router",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Crossroads.js router support for polymer",
   "repository": {
     "type": "git",
