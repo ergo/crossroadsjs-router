@@ -4,12 +4,9 @@
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/ergo/crossroadsjs-router)
 
 `crossroadsjs-router`
-Wraps [Crossroads.js](http://millermedeiros.github.io/crossroads.js) router inside polymer element.
+wraps [Crossroads.js](http://millermedeiros.github.io/crossroads.js) router inside a polymer element.
 
-What are the main advantages of this element over basic `app-route` element?
-
-It can do everything that `app-route` can and take advantage of `crossroads.js`
-functionalities including:
+It has all the features of the `app-route` element plus:
 
 - Named routes
 - URL generation from path definitions (for client side AND 
@@ -23,8 +20,8 @@ functionalities including:
 - Additional match rule support for every rule definition
 - Additional per-route custom callback support when an url is matched or not found
 
-Using `crossroadsjs-route-data` with nested routes and element like `iron-lazy-pages`
-you can achieve functionality comparable to solutions like `angular-ui-router`
+Using `crossroadsjs-route-data` with nested routes and an element like `iron-lazy-pages`
+can achieve functionality comparable to solutions like `angular-ui-router`
 (see the nested routes demo).
 
 You can use the router with both nested routes approach and "flat" routes - 
@@ -37,7 +34,7 @@ character as delimiter:
 - first route name: master
 - second route name: master_other
 
-Means that route `master_other` is piped into `master` router. Element will create all the necessary
+means that route `master_other` is piped into `master` router. This element will create all the necessary
 routers and chain them together. Remember that you need to pass the `subroute*` to route definitions
 for this to work correctly.
 
