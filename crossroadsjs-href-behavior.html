@@ -99,7 +99,14 @@ limitations under the License.
             generatedLink: {
                 type: String,
                 notify: true
-            }
+            },
+            /**
+             * Time that (in ms) url generator should debounce before generating url
+             */
+            debounceTime: {
+                type: Number,
+                value: 0
+            },
         },
 
         _toCamelCase: function (input) {
@@ -122,7 +129,7 @@ limitations under the License.
             return null;
         },
 
-        interpolate: function(routeName, interpolateParams, crossroadsPrefix, paramHashString){
+        interpolate: function (routeName, interpolateParams, crossroadsPrefix, paramHashString) {
             var route = this.getRoute(routeName);
             var url = route.interpolate(interpolateParams);
             if (crossroadsPrefix) {
@@ -135,51 +142,60 @@ limitations under the License.
         },
 
         crossroadsComputeLink: function () {
-            this.debounce('crossroadsComputeLink', function () {
-                var route = this.getRoute(this.crossroadsRouteName);
-                if (route !== null) {
-                    var queryParams = JSON.parse(JSON.stringify(this.queryObject));
-                    var routeParams = {};
-                    for (var x = 0; x < this.attributes.length; x++) {
-                        var item = this.attributes[x];
-                        if (item.name.indexOf('param-') === 0) {
-                            var name = item.name.slice(6);
-                            // remove binding sign from non-binding attributes
-                            if (name.slice(-1) === '$') {
-                                name = name.slice(0, -1);
-                            }
-                            var segments = name.split('-');
-                            name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
-                            routeParams[name] = item.value;
+            if (this.debounceTime > 0) {
+                this.debounce('crossroadsComputeLink', this._computeLink, this.debounceTime);
+            }
+            else {
+                this._computeLink();
+            }
+        },
+
+        _computeLink: function () {
+            console.log('computeLink');
+            var route = this.getRoute(this.crossroadsRouteName);
+            if (route !== null) {
+                var queryParams = JSON.parse(JSON.stringify(this.queryObject));
+                var routeParams = {};
+                for (var x = 0; x < this.attributes.length; x++) {
+                    var item = this.attributes[x];
+                    if (item.name.indexOf('param-') === 0) {
+                        var name = item.name.slice(6);
+                        // remove binding sign from non-binding attributes
+                        if (name.slice(-1) === '$') {
+                            name = name.slice(0, -1);
                         }
-                        else if (item.name.indexOf('query-param-') === 0) {
-                            var name = item.name.slice(12);
-                            // remove binding sign from non-binding attributes
-                            if (name.slice(-1) === '$') {
-                                name = name.slice(0, -1);
-                            }
-                            var segments = name.split('-');
-                            name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
-                            queryParams[name] = item.value;
-                        }
+                        var segments = name.split('-');
+                        name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
+                        routeParams[name] = item.value;
                     }
-                    if (route._paramsIds.indexOf('?query') !== -1) {
-                        routeParams['query'] = queryParams;
-                        routeParams['?query'] = queryParams;
-                    }
-                    var shouldGenerate = true;
-                    route._paramsIds.map(function (item) {
-                        if (route._optionalParamsIds.indexOf(item) === -1 && !routeParams.hasOwnProperty(item)) {
-                            shouldGenerate = false;
+                    else if (item.name.indexOf('query-param-') === 0) {
+                        var name = item.name.slice(12);
+                        // remove binding sign from non-binding attributes
+                        if (name.slice(-1) === '$') {
+                            name = name.slice(0, -1);
                         }
-                    });
-                    if (shouldGenerate) {
-                        var url = this.interpolate(this.crossroadsRouteName,
-                            routeParams, this.crossroadsPrefix, this.paramHashString);
-                        this.generatedLink = url;
+                        var segments = name.split('-');
+                        name = segments[0] + segments.slice(1).map(this._toCamelCase).join('');
+                        queryParams[name] = item.value;
                     }
                 }
-            }, 50);
+                if (route._paramsIds.indexOf('?query') !== -1) {
+                    routeParams['query'] = queryParams;
+                    routeParams['?query'] = queryParams;
+                }
+                var shouldGenerate = true;
+                route._paramsIds.map(function (item) {
+                    if (route._optionalParamsIds.indexOf(item) === -1 && !routeParams.hasOwnProperty(item)) {
+                        shouldGenerate = false;
+                    }
+                });
+                if (shouldGenerate) {
+                    var url = this.interpolate(this.crossroadsRouteName,
+                        routeParams, this.crossroadsPrefix, this.paramHashString);
+                    this.generatedLink = url;
+                }
+            }
         }
+
     };
 </script>

@@ -121,6 +121,15 @@
                                                   param-slug*$="slug"
                                                   crossroads-routes="[[routesHolder]]">
                                 <span>Edit</span></crossroadsjs-href></p>
+                            <p><crossroadsjs-href crossroads-route-name="prefixSectionActionId"
+                                                  param-section$="items"
+                                                  param-action$="edit"
+                                                  param-object-id$="[[sectionRouteData.objectId]]"
+                                                  param-slug*$="slug"
+                                                  crossroads-routes="[[routesHolder]]"
+                                                  debounce-time="2000">
+                                <span>Edit (link with debounced time)</span></crossroadsjs-href></p>
+
                         </div>
                         <div section-name="edit" class="card">
                             <p>Editing item {{sectionRouteData.objectId}}</p>
