@@ -1,6 +1,13 @@
 # \<polymer-crossroadsjs\>
 
 
+### DISCONTINUED
+Because crossroads.js does not have a maintainer and there appear to be implementation problems inside the library, nor there are no PR's being merged into the project I discontinued the development of this component (anyone if free to pick up the work though, crossroads is looking for a maintainer). 
+
+I've created another router based on Angular's `ui-router-core` that is very well maintained and has an active community. You can find the code here https://github.com/ergo/polymer-ui-router, https://www.webcomponents.org/element/ergo/polymer-ui-router. The new project provides tons of new better functionality and I advise everyone to migrate when you can. It also is tested to work on both Polymer 1 and 2.
+
+
+
 [![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/ergo/crossroadsjs-router)
 
 `crossroadsjs-router`
